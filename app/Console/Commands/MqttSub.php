@@ -44,7 +44,8 @@ class mqttSub extends Command
             }, 0);
             $mqtt->subscribe('locker/error', function (string $topic, string $message) {
                 echo sprintf("Received QoS level 0 message on topic [%s]: \r\n%s\r\n", $topic, $message);
-                DB::table("lockers")->where('lockerEncoding', $message)->update(['error' => 1]);
+                list($lockerEncoding, $error) = explode(",", $message, 2);
+                DB::table("lockers")->where('lockerEncoding', $lockerEncoding)->update(['error' => (int)$error]);
             }, 0);
             $mqtt->loop(true);
         } catch (\Exception $e) {
