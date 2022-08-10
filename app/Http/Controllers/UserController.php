@@ -304,7 +304,7 @@ class UserController extends Controller
         try {
             $user = User::where('id', $id);
             Locker::where('userId', $id)->update(['userId' => NULL]);
-            Record::where('userId', $id)->update(['userId' => NULL]);
+            Record::where('userId', $id)->delete();
             $user->delete();
             $response = "success";
             $httpstatus = 200;
