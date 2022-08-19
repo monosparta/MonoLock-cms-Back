@@ -142,7 +142,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::get();
+        return response()->json(User::where("permission",1)->get());
     }
 
     /**

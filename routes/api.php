@@ -33,6 +33,7 @@ Route::middleware([Localization::class])->group(function () {
         Route::patch('admin/{id}', [UserController::class, 'updateAdmin']);
         Route::delete('admin/{id}', [UserController::class, 'destroy']);
 
+        Route::get('user', [UserController::class, 'index']);
         Route::post('user', [UserController::class, 'store']);
         Route::patch('user/{id}', [UserController::class, 'update']);
         Route::delete('user/{id}', [UserController::class, 'destroy']);
