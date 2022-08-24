@@ -43,6 +43,26 @@ class RecordController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     tags={"record"},
+     *     path="/api/record/{lockerNo}",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="lockerNo",
+     *         description="locker number",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string"),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Record  $record
