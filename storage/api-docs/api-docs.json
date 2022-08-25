@@ -166,6 +166,9 @@
                                     },
                                     "password": {
                                         "type": "string"
+                                    },
+                                    "confirm": {
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
