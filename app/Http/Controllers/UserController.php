@@ -28,6 +28,7 @@ class UserController extends Controller
      *                 @OA\Property(property="mail", type="string"),
      *                 @OA\Property(property="name", type="string"),
      *                 @OA\Property(property="password", type="string"),
+     *                 @OA\Property(property="confirm", type="string"),
      *             ),
      *         ),
      *     ),
