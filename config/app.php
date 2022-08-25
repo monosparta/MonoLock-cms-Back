@@ -200,4 +200,10 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /*
+     * Package Service Providers...
+     */
+
+    L5Swagger\L5SwaggerServiceProvider::class,
+
 ];

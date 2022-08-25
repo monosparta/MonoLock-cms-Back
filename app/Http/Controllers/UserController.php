@@ -14,6 +14,31 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Post(
+     *     tags={"admin"},
+     *     path="/api/admin",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="mail", type="string"),
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="password", type="string"),
+     *                 @OA\Property(property="confirm", type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     *     @OA\Response(response=422, description="Unprocessable Content", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function addAdmin(Request $request)
     {
         $response = "";
@@ -23,7 +48,7 @@ class UserController extends Controller
             $request->all(),
             [
                 'mail' => 'required|unique:users|email:rfc|max:80',
-                'name' => 'required|unique:users|max:40',
+                'name' => 'required|max:40',
                 'password' => 'required|confirmed',
             ],
         );
@@ -42,17 +67,59 @@ class UserController extends Controller
             $httpstatus = 200;
         } catch (\Exception $e) {
             $response = $e->getMessage();
-            $httpstatus = 500;
+            $httpstatus = 422;
         }
         return response($response, $httpstatus);
     }
-
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     tags={"admin"},
+     *     path="/api/admin",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function showAdmin(Request $request)
     {
         $admins = User::where("permission", 0)->get(["id", "name", "mail", "permission"]);
         return response($admins, 200);
     }
-
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Patch(
+     *     tags={"admin"},
+     *     path="/api/admin/{id}",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="Admin ID",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="password", type="string"),
+     *                 @OA\Property(property="confirm", type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     *     @OA\Response(response=422, description="Unprocessable Content", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function updateAdmin(Request $request, $id)
     {
         $response = "";
@@ -84,11 +151,33 @@ class UserController extends Controller
             $httpstatus = 200;
         } catch (\Exception $e) {
             $response = $e->getMessage();
-            $httpstatus = 500;
+            $httpstatus = 422;
         }
         return response($response, $httpstatus);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Post(
+     *     tags={"login"},
+     *     path="/api/login",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="mail", type="string"),
+     *                 @OA\Property(property="password", type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function login(Request $request)
     {
         $response = "";
@@ -123,6 +212,19 @@ class UserController extends Controller
         return response()->json(['message' => $response], $httpstatus);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     tags={"logout"},
+     *     path="/api/logout",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function logout(Request $request)
     {
         $Token = $request->header('token');
@@ -138,11 +240,22 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @OA\Get(
+     *     tags={"user"},
+     *     path="/api/user",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     *
+     * Display a listing of the resource.
+     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return User::get();
+        return response()->json(User::where("permission",1)->get());
     }
 
     /**
@@ -156,6 +269,30 @@ class UserController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @OA\Post(
+     *     tags={"user"},
+     *     path="/api/user",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="lockerNo", type="string"),
+     *                 @OA\Property(property="mail", type="string"),
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="cardId", type="string"),
+     *                 @OA\Property(property="phone", type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     *
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -173,7 +310,7 @@ class UserController extends Controller
             [
                 'lockerNo' => 'required|exists:lockers',
                 'mail' => 'required|unique:users|email:rfc|max:80',
-                'name' => 'required|unique:users|max:40',
+                'name' => 'required|max:40',
                 'cardId' => 'required|unique:users|digits_between:0,20',
                 'phone' => 'required|unique:users|digits_between:0,20',
             ],
@@ -229,6 +366,36 @@ class UserController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @OA\Patch(
+     *     tags={"user"},
+     *     path="/api/user/{id}",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="User ID",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="mail", type="string"),
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="cardId", type="string"),
+     *                 @OA\Property(property="phone", type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     *
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -253,7 +420,7 @@ class UserController extends Controller
                     }),
                 ],
                 'mail' => ['required', 'email:rfc', 'max:80', Rule::unique('users')->ignore($id)],
-                'name' => ['required', 'max:40', Rule::unique('users')->ignore($id)],
+                'name' => ['required', 'max:40'],
                 'cardId' => ['required', 'numeric', 'digits_between:6,20', Rule::unique('users')->ignore($id)],
                 'phone' => ['required', 'numeric', 'digits_between:1,20', Rule::unique('users')->ignore($id)],
             ],
@@ -279,8 +446,45 @@ class UserController extends Controller
         return response($response, $httpstatus);
     }
 
-
     /**
+     * Display a listing of the resource.
+     *
+     * @OA\Delete(
+     *     tags={"admin"},
+     *     path="/api/admin/{id}",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="User ID",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     * 
+     * Display a listing of the resource.
+     *
+     * @OA\Delete(
+     *     tags={"user"},
+     *     path="/api/user/{id}",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="User ID",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer"),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     *
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\User  $user
@@ -304,7 +508,7 @@ class UserController extends Controller
         try {
             $user = User::where('id', $id);
             Locker::where('userId', $id)->update(['userId' => NULL]);
-            Record::where('userId', $id)->update(['userId' => NULL]);
+            Record::where('userId', $id)->delete();
             $user->delete();
             $response = "success";
             $httpstatus = 200;

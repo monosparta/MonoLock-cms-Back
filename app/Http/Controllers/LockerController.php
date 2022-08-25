@@ -13,6 +13,30 @@ use Illuminate\Support\Facades\Validator;
 
 class LockerController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Post(
+     *     tags={"Locker"},
+     *     path="/api/unlock",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="lockerNo", type="string"),
+     *                 @OA\Property(property="description", type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     *     @OA\Response(response=422, description="Unprocessable Content", @OA\JsonContent()),
+     *     @OA\Response(response=500, description="Server Error", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function unlock(Request $request)
     {
         $response = "";
@@ -83,6 +107,28 @@ class LockerController extends Controller
         return response($response, $httpstatus);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Post(
+     *     tags={"Locker"},
+     *     path="/api/RPIunlock",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="cardId", type="string"),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
+     *     @OA\Response(response=422, description="Unprocessable Content", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function RPIunlock(Request $request)
     {
         $response = "";
@@ -118,6 +164,18 @@ class LockerController extends Controller
         return response($response, $httpstatus);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     tags={"Locker"},
+     *     path="/api/locker",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
     /**
      * Display a listing of the resource.
      *

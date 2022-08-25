@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LockerController;
@@ -8,7 +7,6 @@ use App\Http\Controllers\RecordController;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\UnlockMiddleware;
 use App\Http\Middleware\EnsurePermissionIsRoot;
-use App\Http\Middleware\EnableCrossRequestMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +23,7 @@ use App\Http\Middleware\EnableCrossRequestMiddleware;
 //     return $request->user();
 // });
 
-Route::middleware([EnableCrossRequestMiddleware::class, Localization::class])->group(function () {
+Route::middleware([Localization::class])->group(function () {
     Route::post('login', [UserController::class, 'login']);
     Route::get('logout', [UserController::class, 'logout']);
 
@@ -35,6 +33,7 @@ Route::middleware([EnableCrossRequestMiddleware::class, Localization::class])->g
         Route::patch('admin/{id}', [UserController::class, 'updateAdmin']);
         Route::delete('admin/{id}', [UserController::class, 'destroy']);
 
+        Route::get('user', [UserController::class, 'index']);
         Route::post('user', [UserController::class, 'store']);
         Route::patch('user/{id}', [UserController::class, 'update']);
         Route::delete('user/{id}', [UserController::class, 'destroy']);

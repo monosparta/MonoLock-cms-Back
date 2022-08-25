@@ -2,9 +2,9 @@
 name: My Actions
 on:
   push:
-    branches: [ main ]
+    branches: [ prod ]
   pull_request:
-    branches: [ main ]
+    branches: [ prod ]
 jobs:
   build:
     name: Build and deploy to web server
@@ -17,13 +17,17 @@ jobs:
       - run: composer install
       - run: composer update
       - run: echo "${{ secrets.LARAVEL_ENV_TEST }}" >> ./.env.testing
-      - run: php artisan config:cache
+      - run: php artisan cache:clear
+      - run: php artisan config:clear
+      - run: php artisan route:clear
       - run: php artisan migrate --no-interaction --env=testing
       - run: php artisan migrate:refresh --no-interaction --env=testing
       - run: php artisan db:seed --no-interaction --env=testing
       - run: php artisan test --env=testing
       - run: echo "${{ secrets.LARAVEL_ENV }}" >> ./.env
-      - run: php artisan config:cache
+      - run: php artisan cache:clear
+      - run: php artisan config:clear
+      - run: php artisan route:clear
       - run: cat ./.env
       - run: rm -rf ./vendor
       - run: rsync -avz -e 'ssh' ./ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}
@@ -34,7 +38,6 @@ jobs:
             composer install
             composer update
             php artisan migrate
-            php artisan cache:clear
             php artisan cache:clear
             php artisan config:clear
             php artisan route:clear

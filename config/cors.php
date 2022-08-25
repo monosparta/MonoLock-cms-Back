@@ -20,9 +20,11 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://localhost',
-        'http://0.0.0.0',
+        'http://127.0.0.1:3000',
+        'http://10.2.10.111',
+        'https://10.2.10.110',
         'http://stage1.monosparta.org',
+        'https://prod1.monosparta.org',
     ],
 
     'allowed_origins_patterns' => [],
