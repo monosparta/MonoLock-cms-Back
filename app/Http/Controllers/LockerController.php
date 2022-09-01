@@ -46,11 +46,6 @@ class LockerController extends Controller
             [
                 'lockerNo' => 'required|exists:lockers',
                 'description' => 'required',
-            ],
-            [],
-            [
-                'lockerNo' => '置物櫃編號',
-                'description' => '開鎖原因',
             ]
         );
         if ($validator->fails()) {
