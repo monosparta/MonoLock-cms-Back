@@ -20,7 +20,7 @@ class UnlockMiddleware
         $token = $request->header('token');
         if ($token == NULL) {
             return response("no_login", 401);
-        } elseif ($token == env('RPI_TOKEN')) {
+        } elseif ($token == config('app.RPI_TOKEN')) { //use config()
             return $next($request);
         } else {
             return response("token_expired", 401);

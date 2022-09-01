@@ -2,9 +2,9 @@
 name: My Actions
 on:
   push:
-    branches: [ prod ]
+    branches: [ main ]
   pull_request:
-    branches: [ prod ]
+    branches: [ main ]
 jobs:
   build:
     name: Build and deploy to web server
@@ -38,9 +38,11 @@ jobs:
             composer install
             composer update
             php artisan migrate
-            php artisan cache:clear
             php artisan config:clear
             php artisan route:clear
+            php artisan cache:clear
+            pm2 reload ecosystem.config.json
+            pm2 save
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           password: ${{ secrets.DEPLOY_PASSWORD }}

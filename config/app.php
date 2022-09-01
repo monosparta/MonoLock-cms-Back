@@ -206,4 +206,7 @@ return [
 
     L5Swagger\L5SwaggerServiceProvider::class,
 
+
+    
+    'RPI_TOKEN' => env('RPI_TOKEN'),
 ];
