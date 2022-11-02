@@ -13,7 +13,7 @@ class MqttManager extends Command
      *
      * @var string
      */
-    protected $signature = 'MqttManager';
+    protected $signature = 'mqttManager';
 
     /**
      * The console command description.

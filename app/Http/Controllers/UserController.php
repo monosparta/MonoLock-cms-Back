@@ -419,10 +419,10 @@ class UserController extends Controller
                         return $query->where('permission', 1);
                     }),
                 ],
-                'mail' => ['required', 'email:rfc', 'max:80', Rule::unique('users')->ignore($id)],
-                'name' => ['required', 'max:40'],
-                'cardId' => ['required', 'numeric', 'digits_between:6,20', Rule::unique('users')->ignore($id)],
-                'phone' => ['required', 'numeric', 'digits_between:1,20', Rule::unique('users')->ignore($id)],
+                'mail' => 'required|unique:users|email:rfc|max:80',
+                'name' => 'required|max:40',
+                'cardId' => 'required|unique:users|digits_between:0,20',
+                'phone' => 'required|unique:users|digits_between:0,20',
             ],
         );
         if ($validator->fails()) {
