@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Locker;
 use App\Models\User;
+use App\Models\Locker;
 use App\Models\Record;
-use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
 use PhpMqtt\Client\Facades\MQTT;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class LockerController extends Controller
@@ -178,7 +179,9 @@ class LockerController extends Controller
      */
     public function index()
     {
-        $locker = Locker::orderBy('id', 'asc')->get(['id', 'lockerNo', 'lockUp', 'userId', 'error']);
+        $locker = Locker::with('User:id,name,cardId')->orderBy('id', 'asc')->get(['id', 'lockerNo', 'lockerEncoding', 'lockUp', 'userId', 'error'])->map(function($item){
+            return Arr::except($item, ['userId']);
+        });
         return response($locker, 200);
     }
 
