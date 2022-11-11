@@ -18,7 +18,7 @@
         {
             "name": "lock-cms-back-mqtt",
             "script": "artisan",
-            "args": ["mqtt"],
+            "args": ["mqttSub"],
             "instances": "1",
             "wait_ready": true,
             "autorestart": true,
