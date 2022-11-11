@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build and deploy to web server
-    runs-on: [self-hosted, prod]
+    runs-on: self-hosted
     environment: Prod
     steps:
       - uses: actions/checkout@v3
