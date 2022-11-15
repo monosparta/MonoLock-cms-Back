@@ -14,7 +14,7 @@ class mqttSub extends Command
      *
      * @var string
      */
-    protected $signature = 'mqtt';
+    protected $signature = 'mqttSub';
 
     /**
      * The console command description.

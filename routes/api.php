@@ -39,6 +39,7 @@ Route::middleware([Localization::class])->group(function () {
         Route::delete('user/{id}', [UserController::class, 'destroy']);
 
         Route::get('locker', [LockerController::class, 'index']);
+        
         Route::post('unlock', [LockerController::class, 'unlock']);
 
         Route::get('record/{lockerNo}', [RecordController::class, 'show']);
