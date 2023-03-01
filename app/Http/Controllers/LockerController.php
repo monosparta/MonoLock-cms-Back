@@ -8,6 +8,7 @@ use App\Models\Record;
 use Illuminate\Log\Logger;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+
 use PhpMqtt\Client\Facades\MQTT;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -50,7 +51,7 @@ class LockerController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return  response($validator->errors(), 400);
+            return  response()->json($validator->errors(), 400);
         }
         try {
             $locker = Locker::where('lockerNo', '=', $request['lockerNo']);
@@ -100,7 +101,7 @@ class LockerController extends Controller
             $response = $e->getMessage();
             $httpstatus = 422;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -136,7 +137,7 @@ class LockerController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return  response($validator->errors(), 400);
+            return  response()->json($validator->errors(), 400);
         }
         try {
             $user = User::where('cardId', '=', $request['cardId'])->first();
@@ -157,7 +158,7 @@ class LockerController extends Controller
             $response = $e->getMessage();
             $httpstatus = 422;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -182,7 +183,7 @@ class LockerController extends Controller
         $locker = Locker::with('User:id,name,cardId')->orderBy('id', 'asc')->get(['id', 'lockerNo', 'lockerEncoding', 'lockUp', 'userId', 'error'])->map(function($item){
             return Arr::except($item, ['userId']);
         });
-        return response($locker, 200);
+        return response()->json($locker, 200);
     }
 
     /**
