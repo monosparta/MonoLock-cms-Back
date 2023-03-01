@@ -69,7 +69,7 @@ class UserController extends Controller
             $response = $e->getMessage();
             $httpstatus = 422;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
     
     /**
@@ -87,7 +87,7 @@ class UserController extends Controller
     public function showAdmin(Request $request)
     {
         $admins = User::where("permission", 0)->get(["id", "name", "mail", "permission"]);
-        return response($admins, 200);
+        return response()->json($admins, 200);
     }
     
     /**
@@ -124,10 +124,11 @@ class UserController extends Controller
     {
         $response = "";
         $httpstatus = 204;
-        $request["id"] = $id;
-        $request["password_confirmation"] = $request["confirm"];
+        $json = $request->all();
+        $json["id"] = $id;
+        $json["password_confirmation"] = $request["confirm"];
         $validator = Validator::make(
-            $request->all(),
+            $json,
             [
                 'id' => [
                     'required',
@@ -135,25 +136,63 @@ class UserController extends Controller
                         return $query->where('permission', 0);
                     }),
                 ],
-                'password' => 'required|confirmed',
+                'name' => [
+                    'min:1',
+                    'max:40'
+                ],
+                'password' => 'confirmed',
+                'cardId' => [
+                    'min:1',
+                    'max:20',
+                ],
+                'phone' => [
+                    'regex:/(0)[0-9]{9}/',
+                    'max:10',
+                ],
+                'mail' => [
+                    Rule::unique('users')->ignore($id)
+                ],
             ],
         );
         if ($validator->fails()) {
             $response = $validator->errors();
             $httpstatus = 400;
+            return response()->json($response, $httpstatus);
         }
         try {
             $user = User::where('id', $id);
-            $user->update([
-                "password" => Hash::make($request["password"])
-            ]);
+            if(!empty($json["name"] ?? [])) {
+                $user->update([
+                    "name" => $json["name"]
+                ]);
+            }
+            if(!empty($json["password"] ?? [])) {
+                $user->update([
+                    "password" => Hash::make($json["password"])
+                ]);
+            }
+            if(!empty($json["cardId"] ?? [])) {
+                $user->update([
+                    "cardId" => $json["cardId"]
+                ]);
+            }
+            if(!empty($json["phone"] ?? [])) {
+                $user->update([
+                    "phone" => $json["phone"]
+                ]);
+            }
+            if(!empty($json["mail"] ?? [])) {
+                $user->update([
+                    "mail" => $json["mail"]
+                ]);
+            }
             $response = $user->first(['id', 'name', 'mail']);
             $httpstatus = 200;
         } catch (\Exception $e) {
             $response = $e->getMessage();
             $httpstatus = 422;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -230,10 +269,10 @@ class UserController extends Controller
         $Token = $request->header('token');
         $user = User::where("remember_token", $Token);
         if ($user->first() == null) {
-            return response("token not found", 400);
+            return response()->json("token not found", 400);
         } else {
             $user->update(["remember_token" => null, "token_expire_time" => null]);
-            return response("success", 200);
+            return response()->json("success", 200);
         }
     }
 
@@ -340,7 +379,7 @@ class UserController extends Controller
             $response = "此置物櫃已被使用";
             $httpstatus = 400;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -443,7 +482,7 @@ class UserController extends Controller
             $response = $e->getMessage();
             $httpstatus = 400;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -516,6 +555,6 @@ class UserController extends Controller
             $response = $e->getMessage();
             $httpstatus = 400;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 }

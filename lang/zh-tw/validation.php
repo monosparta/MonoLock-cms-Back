@@ -20,12 +20,16 @@ return [
     'digits_between' => ':attribute必須是介於:min~:max個字的數字',
     'email' => ':attribute必須符合電子信箱格式',
     'exists' => '此:attribute不存在',
+    'min' => [
+        'string' => ':attribute不能少於:min個字',
+    ],
     'max' => [
         'string' => ':attribute不能超過:max個字',
     ],
     'numeric' => ':attribute只能有數字',
     'required' => ':attribute不能為空',
     'unique' => '此:attribute已被使用',
+    'regex' => ':attribute只能有數字格式錯誤',
 
     /*
     |--------------------------------------------------------------------------
