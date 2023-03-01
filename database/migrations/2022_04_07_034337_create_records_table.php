@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->text('description')->nullable();
             $table->unsignedInteger('lockerId');
-            $table->unsignedInteger('userId');
+            $table->uuid('userId');
             $table->timestamps();
             $table->foreign('userId')->references('id')->on('users');
             $table->foreign('lockerId')->references('id')->on('lockers');
