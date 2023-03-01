@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Locker;
 use App\Models\Record;
+use Closure;
+use Exception;
 use Illuminate\Log\Logger;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -12,6 +14,7 @@ use Illuminate\Http\Request;
 use PhpMqtt\Client\Facades\MQTT;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class LockerController extends Controller
 {
@@ -236,9 +239,37 @@ class LockerController extends Controller
      * @param  \App\Models\Locker  $locker
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, locker $locker)
+    public function update(Request $request, $lockerNo)
     {
-        //
+        $httpstatus = 204;
+        $json = $request->all();
+        $validator = Validator::make(
+            $json,
+            [
+                'userId' => function (string $attribute, mixed $value, Closure $fail) {
+                    if (!empty($value)) {
+                        if(empty(User::where('id', $value)->first())) {
+                            $fail(":attribute不存在");
+                            return;
+                        }
+                    }
+                },
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        try {
+            $newLocker = Locker::where('lockerNo', $lockerNo)->first();
+            $newLocker->update([
+                'userId' => $json['userId'],
+            ]);
+            return response()->json($newLocker, 200);
+        } catch (Exception $e) {
+            $response = $e->getMessage();
+            $httpstatus = 422;
+        }
+        return response()->json($response, $httpstatus);
     }
 
     /**
