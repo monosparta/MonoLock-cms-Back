@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
      
         $this->call([
             LockerSeeder::class,
+            RecordSeeder::class,
             RootUserSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
