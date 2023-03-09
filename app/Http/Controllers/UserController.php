@@ -292,9 +292,19 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(User::where("permission",1)->get());
+        $json = $request->all();
+        $query = User::where("permission", 1);
+        if (isset($json['has_lock'])) {
+            if ($json['has_lock']) {
+                return response()->json($query->with('Locker')->has('Locker')->get());
+            }
+            else {
+                return response()->json($query->doesnthave('Locker')->get());
+            }
+        }
+        return response()->json($query->get());
     }
 
     /**
