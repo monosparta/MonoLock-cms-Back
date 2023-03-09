@@ -17,12 +17,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(20)->create()->each(function ($u) {
-            locker::insert([]);
-            $locker = locker::where('UserId', '=', NULL)->where('lockerNo', '<>', NULL)->inRandomOrder()->first();
-            if ($locker != NULL) {
-                $locker->update(['UserId' => $u->id]);
-            }
-        });
+        User::factory(50)->create();
     }
 }
