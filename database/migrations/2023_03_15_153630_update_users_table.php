@@ -21,11 +21,6 @@ return new class extends Migration
             $table->uuid('uuid')->after('id')->default(Uuid::uuid4()->toString());
         });
 
-        // 更新uuid欄位
-        Schema::table('users', function (Blueprint $table) {
-            DB::statement('UPDATE users SET uuid = UUID()');
-        });
-
         // 刪除其他資料表中的關聯
         Schema::table('lockers', function (Blueprint $table) {
             $table->dropForeign(['userId']);
@@ -43,6 +38,16 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->primary('uuid');
             $table->renameColumn('uuid', 'id');
+        });
+
+        // 新增其他資料表中的關聯
+        Schema::table('lockers', function (Blueprint $table) {
+            $table->uuid('userId')->change();
+            $table->foreign('userId')->references('id')->on('users');
+        });
+        Schema::table('records', function (Blueprint $table) {
+            $table->uuid('userId')->change();
+            $table->foreign('userId')->references('id')->on('users');
         });
     }
 
