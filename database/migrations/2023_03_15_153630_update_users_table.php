@@ -19,7 +19,7 @@ return new class extends Migration
     {
         // 新增uuid欄位
         Schema::table('users', function (Blueprint $table) {
-            $table->uuid('uuid')->after('id');
+            $table->uuid('uuid')->after('id')->default(Uuid::uuid4());
         });
 
         // // 刪除舊的自增長整數的主鍵
