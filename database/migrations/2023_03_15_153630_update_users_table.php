@@ -29,11 +29,6 @@ return new class extends Migration
             $table->dropForeign(['userId']);
         });
 
-        // 刪除舊的自增長整數的主鍵
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('id');
-        });
-
         // 修改其他資料表中的關聯
         Schema::table('lockers', function (Blueprint $table) {
             $table->uuid('userId')->change();
@@ -42,6 +37,11 @@ return new class extends Migration
         Schema::table('records', function (Blueprint $table) {
             $table->uuid('userId')->change();
             $table->foreign('userId')->references('uuid')->on('users');
+        });
+
+        // 刪除舊的自增長整數的主鍵
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('id');
         });
 
         // 將uuid欄位設為主鍵 並改名為id
