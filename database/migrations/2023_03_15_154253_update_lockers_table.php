@@ -22,6 +22,9 @@ return new class extends Migration
         // 修改欄位型態為uuid和修改參考欄位
         Schema::table('lockers', function (Blueprint $table) {
             $table->uuid('userId')->change();
+        });
+        
+        Schema::table('lockers', function (Blueprint $table) {
             $table->foreign('userId')->references('uuid')->on('users');
         });
 
