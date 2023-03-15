@@ -19,7 +19,7 @@ class RecordFactory extends Factory
      */
     public function definition()
     {
-        $locker = locker::where("userId", "<>", NULL)->inRandomOrder()->first();
+        $locker = locker::where("userId", "<>", NULL)->where('lockerNo', '<>', '00')->inRandomOrder()->first();
         $randnum = rand(1, 40);
         $userId = $locker->userId;
         $description = NULL;
