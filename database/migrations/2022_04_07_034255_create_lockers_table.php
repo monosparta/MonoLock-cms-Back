@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('lockers', function (Blueprint $table) {
-            $table->increments('id')->nullable();
+            $table->increments('id');
             $table->string('lockerNo',20)->unique()->nullable();
             $table->string('lockerEncoding',4)->unique()->nullable();
             $table->boolean('lockUp')->default(true);
