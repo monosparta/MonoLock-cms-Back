@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -44,10 +45,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public $incrementing = false;
+    
+    public $keyType = 'string';
+
+    public static function boot(){
+        parent::boot();
+    
+        static::creating(function ($issue) {
+            $issue->id = Str::uuid(36);
+        });
+    }
 
     public function Locker()
     {
-        return $this->hasOne(Locker::class, 'lockerId', 'id');
+        return $this->hasOne(Locker::class, 'userId', 'id');
     }
 
     public function Record()

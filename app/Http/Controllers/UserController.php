@@ -18,148 +18,6 @@ class UserController extends Controller
      * Display a listing of the resource.
      *
      * @OA\Post(
-     *     tags={"admin"},
-     *     path="/api/admin",
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(property="mail", type="string"),
-     *                 @OA\Property(property="name", type="string"),
-     *                 @OA\Property(property="password", type="string"),
-     *                 @OA\Property(property="confirm", type="string"),
-     *             ),
-     *         ),
-     *     ),
-     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
-     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
-     *     @OA\Response(response=422, description="Unprocessable Content", @OA\JsonContent()),
-     * )
-     *
-     * @return AnonymousResourceCollection
-     */
-    public function addAdmin(Request $request)
-    {
-        $response = "";
-        $httpstatus = 204;
-        $request["password_confirmation"] = $request["confirm"];
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'mail' => 'required|unique:users|email:rfc|max:80',
-                'name' => 'required|max:40',
-                'password' => 'required|confirmed',
-            ],
-        );
-        if ($validator->fails()) {
-            $response = $validator->errors();
-            $httpstatus = 400;
-        }
-        try {
-            $newUser = new user();
-            $newUser->mail = $request["mail"];
-            $newUser->name = $request["name"];
-            $newUser->password = Hash::make($request["password"]);
-            $newUser->permission = 0;
-            $newUser->save();
-            $response = "success";
-            $httpstatus = 200;
-        } catch (\Exception $e) {
-            $response = $e->getMessage();
-            $httpstatus = 422;
-        }
-        return response($response, $httpstatus);
-    }
-    
-    /**
-     * Display a listing of the resource.
-     *
-     * @OA\Get(
-     *     tags={"admin"},
-     *     path="/api/admin",
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
-     * )
-     *
-     * @return AnonymousResourceCollection
-     */
-    public function showAdmin(Request $request)
-    {
-        $admins = User::where("permission", 0)->get(["id", "name", "mail", "permission"]);
-        return response($admins, 200);
-    }
-    
-    /**
-     * Display a listing of the resource.
-     *
-     * @OA\Patch(
-     *     tags={"admin"},
-     *     path="/api/admin/{id}",
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         description="Admin ID",
-     *         required=true,
-     *         in="path",
-     *         @OA\Schema(type="integer"),
-     *     ),
-     *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(property="password", type="string"),
-     *                 @OA\Property(property="confirm", type="string"),
-     *             ),
-     *         ),
-     *     ),
-     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
-     *     @OA\Response(response=400, description="Bad Request", @OA\JsonContent()),
-     *     @OA\Response(response=422, description="Unprocessable Content", @OA\JsonContent()),
-     * )
-     *
-     * @return AnonymousResourceCollection
-     */
-    public function updateAdmin(Request $request, $id)
-    {
-        $response = "";
-        $httpstatus = 204;
-        $request["id"] = $id;
-        $request["password_confirmation"] = $request["confirm"];
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'id' => [
-                    'required',
-                    Rule::exists('users')->where(function ($query) {
-                        return $query->where('permission', 0);
-                    }),
-                ],
-                'password' => 'required|confirmed',
-            ],
-        );
-        if ($validator->fails()) {
-            $response = $validator->errors();
-            $httpstatus = 400;
-        }
-        try {
-            $user = User::where('id', $id);
-            $user->update([
-                "password" => Hash::make($request["password"])
-            ]);
-            $response = $user->first(['id', 'name', 'mail']);
-            $httpstatus = 200;
-        } catch (\Exception $e) {
-            $response = $e->getMessage();
-            $httpstatus = 422;
-        }
-        return response($response, $httpstatus);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @OA\Post(
      *     tags={"login"},
      *     path="/api/login",
      *     security={{"sanctum":{}}},
@@ -230,10 +88,10 @@ class UserController extends Controller
         $Token = $request->header('token');
         $user = User::where("remember_token", $Token);
         if ($user->first() == null) {
-            return response("token not found", 400);
+            return response()->json("token not found", 400);
         } else {
             $user->update(["remember_token" => null, "token_expire_time" => null]);
-            return response("success", 200);
+            return response()->json("success", 200);
         }
     }
 
@@ -253,9 +111,19 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(User::where("permission",1)->get());
+        $json = $request->all();
+        $query = User::where("permission", 1);
+        if (isset($json['has_lock'])) {
+            if ($json['has_lock']) {
+                return response()->json($query->with('Locker')->has('Locker')->get());
+            }
+            else {
+                return response()->json($query->doesnthave('Locker')->get());
+            }
+        }
+        return response()->json($query->with('Locker')->get());
     }
 
     /**
@@ -340,7 +208,7 @@ class UserController extends Controller
             $response = "此置物櫃已被使用";
             $httpstatus = 400;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -443,7 +311,7 @@ class UserController extends Controller
             $response = $e->getMessage();
             $httpstatus = 400;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -516,6 +384,6 @@ class UserController extends Controller
             $response = $e->getMessage();
             $httpstatus = 400;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 }

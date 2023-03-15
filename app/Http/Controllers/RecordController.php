@@ -95,7 +95,7 @@ class RecordController extends Controller
                 }
             }
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
