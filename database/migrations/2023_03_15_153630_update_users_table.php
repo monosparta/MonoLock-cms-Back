@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,8 +19,14 @@ return new class extends Migration
     {
         // 新增uuid欄位
         Schema::table('users', function (Blueprint $table) {
-            $table->uuid('uuid')->after('id')->default(Uuid::uuid4()->toString());
+            $table->uuid('uuid')->after('id');
         });
+
+        $users = User::all();
+        foreach ($users as $user) {
+            $user->uuid = Str::uuid();
+            $user->save();
+        }
 
         // // 刪除舊的自增長整數的主鍵
         // Schema::table('users', function (Blueprint $table) {
