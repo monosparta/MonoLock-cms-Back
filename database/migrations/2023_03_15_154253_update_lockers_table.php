@@ -29,7 +29,7 @@ return new class extends Migration
         // 更新原userId流水號為uuid字串
         Schema::table('lockers', function (Blueprint $table) {
             DB::statement(
-                'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 
+                'UPDATE lockers JOIN users ON lockers.userId = users.id 
                     SET lockers.userId = users.uuid 
                     WHERE lockers.userId = users.id'
             );
