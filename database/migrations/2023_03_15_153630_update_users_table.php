@@ -34,20 +34,20 @@ return new class extends Migration
             $table->dropColumn('id');
         });
 
+        // 修改其他資料表中的關聯
+        Schema::table('lockers', function (Blueprint $table) {
+            $table->uuid('userId')->change();
+            $table->foreign('userId')->references('uuid')->on('users');
+        });
+        Schema::table('records', function (Blueprint $table) {
+            $table->uuid('userId')->change();
+            $table->foreign('userId')->references('uuid')->on('users');
+        });
+
         // 將uuid欄位設為主鍵 並改名為id
         Schema::table('users', function (Blueprint $table) {
             $table->primary('uuid');
             $table->renameColumn('uuid', 'id');
-        });
-
-        // 新增其他資料表中的關聯
-        Schema::table('lockers', function (Blueprint $table) {
-            $table->uuid('userId')->change();
-            $table->foreign('userId')->references('id')->on('users');
-        });
-        Schema::table('records', function (Blueprint $table) {
-            $table->uuid('userId')->change();
-            $table->foreign('userId')->references('id')->on('users');
         });
     }
 
