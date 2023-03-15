@@ -29,11 +29,11 @@ return new class extends Migration
         // 更新原userId流水號為uuid字串
         if (env('DB_CONNECTION') === 'mysql') {
             DB::statement(
-                'UPDATE records INNER JOIN users ON records.userId = users.id 
-                    SET records.userId = users.uuid 
-                    WHERE records.userId = users.id'
+                'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 
+                    SET lockers.userId = users.uuid 
+                    WHERE lockers.userId = users.id'
             );
-        } elseif (env('DB_CONNECTION') === 'sqlite') {
+        } else if (env('DB_CONNECTION') === 'sqlite') {
             DB::statement(
                 'UPDATE lockers JOIN users ON lockers.userId = users.id 
                         SET lockers.userId = users.uuid 
