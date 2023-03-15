@@ -24,7 +24,7 @@ class LockerSeeder extends Seeder
         foreach ($lockerList as $value) {
             $locker = ['lockerNo' => $value];
             if ($value != NULL) {
-                $index = random_int(0, count($users));
+                $index = random_int(0, count($users) - 1);
                 $locker['lockerEncoding'] = $faker->unique()->regexify('[0-9]{4}');
                 $locker['userId'] = $users[$index]['id'];
                 array_splice($users, $index, 1);
