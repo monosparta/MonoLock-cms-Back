@@ -27,19 +27,25 @@ return new class extends Migration
         });
 
         // 更新原userId流水號為uuid字串
-        if (env('DB_CONNECTION') !== 'sqlite') {
-            DB::statement(
-                'UPDATE records INNER JOIN users ON records.userId = users.id 
+        DB::statement(
+            'UPDATE records INNER JOIN users ON records.userId = users.id 
                     SET records.userId = users.uuid 
                     WHERE records.userId = users.id'
-            );
-        } else {
-            DB::statement(
-                'UPDATE records JOIN users ON records.userId = users.id 
-                    SET records.userId = users.uuid 
-                    WHERE records.userId = users.id'
-            );
-        }
+        );
+
+        // if (env('DB_CONNECTION') !== 'sqlite') {
+        //     DB::statement(
+        //         'UPDATE records INNER JOIN users ON records.userId = users.id 
+        //             SET records.userId = users.uuid 
+        //             WHERE records.userId = users.id'
+        //     );
+        // } else {
+        //     DB::statement(
+        //         'UPDATE records JOIN users ON records.userId = users.id 
+        //             SET records.userId = users.uuid 
+        //             WHERE records.userId = users.id'
+        //     );
+        // }
     }
 
     /**
