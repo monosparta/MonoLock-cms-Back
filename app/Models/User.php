@@ -8,10 +8,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    public $keyType = 'string';
 
     /**
      * The attributes that are mass assignable.
@@ -45,15 +50,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public $incrementing = false;
-    
-    public $keyType = 'string';
-
     public static function boot(){
         parent::boot();
     
-        static::creating(function ($issue) {
-            $issue->id = Str::uuid(36);
+        static::creating(function ($model) {
+            $model->{$model->getKeyName()} = Uuid::uuid4()->toString();
         });
     }
 
