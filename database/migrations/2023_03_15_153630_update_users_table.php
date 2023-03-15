@@ -21,7 +21,7 @@ return new class extends Migration
             $table->uuid('uuid')->after('id')->default(Uuid::uuid4()->toString());
         });
 
-        // 刪除其他資料表中的關聯
+        // 刪除其他資料表中的舊關聯
         Schema::table('lockers', function (Blueprint $table) {
             $table->dropForeign(['userId']);
         });
