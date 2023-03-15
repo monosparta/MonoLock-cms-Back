@@ -16,7 +16,9 @@ return new class extends Migration
     {
         // 刪除資料表中的舊關聯
         Schema::table('records', function (Blueprint $table) {
-            $table->dropForeign(['userId']);
+            if (env('DB_CONNECTION') !== 'sqlite') {
+                $table->dropForeign(['userId']);
+            }
         });
 
         // 修改欄位型態為uuid格式
