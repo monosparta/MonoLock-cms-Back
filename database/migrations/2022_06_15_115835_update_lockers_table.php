@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('lockers', function (Blueprint $table) {
-            if (env('DB_CONNECTION') !== 'sqlite') {
+            if (env('DB_CONNECTION') === 'mysql') {
                 $table->dropForeign(['userId']);
             }
             $table->foreign('userId')->references('id')->on('users')->nullOnDelete();

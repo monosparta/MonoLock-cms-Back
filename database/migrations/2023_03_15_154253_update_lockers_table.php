@@ -16,7 +16,7 @@ return new class extends Migration
     {
         // 刪除資料表中的舊關聯
         Schema::table('lockers', function (Blueprint $table) {
-            if (env('DB_CONNECTION') !== 'sqlite') {
+            if (env('DB_CONNECTION') === 'mysql') {
                 $table->dropForeign(['userId']);
             }
         });
@@ -27,17 +27,19 @@ return new class extends Migration
         });
 
         // 更新原userId流水號為uuid字串
-        Schema::table('lockers', function (Blueprint $table) {
+        if (env('DB_CONNECTION') === 'mysql') {
+            DB::statement(
+                'UPDATE records INNER JOIN users ON records.userId = users.id 
+                    SET records.userId = users.uuid 
+                    WHERE records.userId = users.id'
+            );
+        } elseif (env('DB_CONNECTION') === 'sqlite') {
             DB::statement(
                 'UPDATE lockers JOIN users ON lockers.userId = users.id 
-                    SET lockers.userId = users.uuid 
-                    WHERE lockers.userId = users.id'
+                        SET lockers.userId = users.uuid 
+                        WHERE lockers.userId = users.id'
             );
-        });
-
-        // Schema::table('lockers', function (Blueprint $table) {
-        //     $table->foreign('userId')->references('uuid')->on('users');
-        // });
+        }
     }
 
     /**
