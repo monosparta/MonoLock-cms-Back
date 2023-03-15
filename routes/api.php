@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LockerController;
@@ -28,10 +29,9 @@ Route::middleware([Localization::class])->group(function () {
     Route::get('logout', [UserController::class, 'logout']);
 
     Route::middleware([EnsurePermissionIsRoot::class])->group(function () {
-        Route::post('admin', [UserController::class, 'addAdmin']);
-        Route::get('admin', [UserController::class, 'showAdmin']);
-        Route::patch('admin/{id}', [UserController::class, 'updateAdmin']);
-        Route::delete('admin/{id}', [UserController::class, 'destroy']);
+        Route::get('admin', [AdminController::class, 'index']);
+        Route::post('admin', [AdminController::class, 'store']);
+        Route::patch('admin/{id}', [AdminController::class, 'update']);
 
         Route::get('user', [UserController::class, 'index']);
         Route::post('user', [UserController::class, 'store']);
