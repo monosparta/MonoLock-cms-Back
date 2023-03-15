@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,9 +14,22 @@ return new class extends Migration
      */
     public function up()
     {
+        // 刪除資料表中的舊關聯
+        Schema::table('lockers', function (Blueprint $table) {
+            $table->dropForeign(['userId']);
+        });
+
+        // 修改欄位型態為uuid和修改參考欄位
         Schema::table('lockers', function (Blueprint $table) {
             $table->uuid('userId')->change();
+            $table->foreign('userId')->references('uuid')->on('users');
         });
+
+        DB::statement(
+            'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 
+                SET lockers.userId = users.uuid 
+                WHERE lockers.userId = users.id'
+        );
     }
 
     /**
