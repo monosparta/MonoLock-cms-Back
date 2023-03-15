@@ -27,18 +27,19 @@ return new class extends Migration
         });
 
         // 更新原userId流水號為uuid字串
-        if (env('DB_CONNECTION') === 'mysql') {
+        if (env('DB_CONNECTION') !== 'sqlite') {
             DB::statement(
                 'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 
                     SET lockers.userId = users.uuid 
                     WHERE lockers.userId = users.id'
             );
-        } else if (env('DB_CONNECTION') === 'sqlite') {
+        }
+        else {
             DB::statement(
                 'UPDATE lockers JOIN users ON lockers.userId = users.id 
-                        SET lockers.userId = users.uuid 
-                        WHERE lockers.userId = users.id'
-            );
+                    SET lockers.userId = users.uuid 
+                    WHERE lockers.userId = users.id'
+            );    
         }
     }
 
