@@ -24,16 +24,17 @@ return new class extends Migration
             $table->uuid('userId')->change();
         });
 
-        DB::statement(
-            'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 
-                SET lockers.userId = users.uuid 
-                WHERE lockers.userId = users.id'
-        );
+        Schema::table('lockers', function (Blueprint $table) {
+            DB::statement(
+                'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 
+                    SET lockers.userId = users.uuid 
+                    WHERE lockers.userId = users.id'
+            );
+        });
 
         Schema::table('lockers', function (Blueprint $table) {
             $table->foreign('userId')->references('uuid')->on('users');
         });
-
     }
 
     /**
