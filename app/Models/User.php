@@ -47,7 +47,7 @@ class User extends Authenticatable
 
     public function Locker()
     {
-        return $this->hasOne(Locker::class, 'lockerId', 'id');
+        return $this->hasOne(Locker::class, 'userId', 'id');
     }
 
     public function Record()
