@@ -189,7 +189,7 @@ class AdminController extends Controller
         $response = "";
         $httpstatus = 204;
         $validator = Validator::make(
-            $id,
+            ['id' => $id],
             [
                 'id' => 'required|exists:users'
             ],
