@@ -32,9 +32,9 @@ return new class extends Migration
             );
         });
 
-        Schema::table('lockers', function (Blueprint $table) {
-            $table->foreign('userId')->references('uuid')->on('users');
-        });
+        // Schema::table('lockers', function (Blueprint $table) {
+        //     $table->foreign('userId')->references('uuid')->on('users');
+        // });
     }
 
     /**

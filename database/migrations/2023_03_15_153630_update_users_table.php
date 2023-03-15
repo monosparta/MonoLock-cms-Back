@@ -5,6 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 // use UseUuid;
 
 return new class extends Migration
@@ -18,7 +19,7 @@ return new class extends Migration
     {
         // 新增uuid欄位
         Schema::table('users', function (Blueprint $table) {
-            $table->uuid('uuid')->after('id')->default(Uuid::uuid4()->toString());
+            $table->uuid('uuid')->after('id')->default(Str::uuid()->toString());
         });
 
         // // 刪除舊的自增長整數的主鍵
