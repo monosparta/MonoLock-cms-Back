@@ -19,11 +19,12 @@ return new class extends Migration
             $table->dropForeign(['userId']);
         });
 
-        // 修改欄位型態為uuid和修改參考欄位
+        // 修改欄位型態為uuid格式
         Schema::table('lockers', function (Blueprint $table) {
             $table->uuid('userId')->change();
         });
 
+        // 更新原userId流水號為uuid字串
         Schema::table('lockers', function (Blueprint $table) {
             DB::statement(
                 'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 

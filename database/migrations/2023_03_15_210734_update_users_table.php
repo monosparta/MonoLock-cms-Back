@@ -1,12 +1,8 @@
 <?php
 
-use App\Models\User;
-use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -17,18 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        // 新增uuid欄位
+        // 刪除舊的主鍵
         Schema::table('users', function (Blueprint $table) {
-            $table->uuid('uuid')->after('id');
+            $table->dropColumn('id');
         });
 
-        // 塞值
-        $users = User::all();
-        foreach ($users as $user) {
-            $user->uuid = Str::uuid();
-            $user->save();
-        }
-
+        // 將uuid欄位設為主鍵 並改名為id
+        Schema::table('users', function (Blueprint $table) {
+            $table->primary('uuid');
+            $table->renameColumn('uuid', 'id');
+        });
     }
 
     /**
@@ -38,8 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('uuid');
-        });
+        //
     }
 };
