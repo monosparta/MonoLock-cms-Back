@@ -186,6 +186,29 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $response = "";
+        $httpstatus = 204;
+        $validator = Validator::make(
+            $id,
+            [
+                'id' => 'required|exists:users'
+            ],
+        );
+        if ($validator->fails()) {
+            $response = $validator->errors();
+            $httpstatus = 400;
+        }
+        try {
+            $user = User::where('id', $id);
+            Locker::where('userId', $id)->update(['userId' => NULL]);
+            Record::where('userId', $id)->delete();
+            $user->delete();
+            $response = "success";
+            $httpstatus = 200;
+        } catch (\Exception $e) {
+            $response = $e->getMessage();
+            $httpstatus = 400;
+        }
+        return response()->json($response, $httpstatus);
     }
 }
