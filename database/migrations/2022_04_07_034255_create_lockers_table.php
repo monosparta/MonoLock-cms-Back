@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('lockerNo',20)->unique()->nullable();
             $table->string('lockerEncoding',4)->unique()->nullable();
             $table->boolean('lockUp')->default(true);
-            $table->uuid('userId')->nullable();
+            $table->foerignUuid('userId')->nullable();
             $table->boolean('error')->default(false);
             $table->timestamps();
             $table->foreign('userId')->references('id')->on('users');
