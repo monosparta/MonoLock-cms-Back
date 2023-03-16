@@ -40,9 +40,9 @@ return new class extends Migration
         }
 
         // 建立新關聯
-        Schema::table('records', function (Blueprint $table) {
-            $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
-        });
+        // Schema::table('records', function (Blueprint $table) {
+        //     $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+        // });
 
         // DB::statement(
         //     'UPDATE records INNER JOIN users ON records.userId = users.id 

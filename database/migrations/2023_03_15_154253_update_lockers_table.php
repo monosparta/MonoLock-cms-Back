@@ -41,9 +41,9 @@ return new class extends Migration
         }
 
         // 建立新關聯
-        Schema::table('lockers', function (Blueprint $table) {
-            $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
-        });
+        // Schema::table('lockers', function (Blueprint $table) {
+        //     $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+        // });
 
         // DB::statement(
         //     'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 

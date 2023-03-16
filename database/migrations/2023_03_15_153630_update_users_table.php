@@ -19,7 +19,7 @@ return new class extends Migration
     {
         // 新增uuid欄位
         Schema::table('users', function (Blueprint $table) {
-            $table->uuid('uuid')->after('id');
+            $table->uuid('uuid')->unsigned()->after('id');
         });
 
         // 塞值
