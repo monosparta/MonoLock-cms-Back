@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        // Schema::table('records', function (Blueprint $table) {
+        Schema::table('records', function (Blueprint $table) {
             // if (env('DB_CONNECTION') !== 'sqlite') {
-            // $table->foreign('userId')->references('id')->on('users')->nullOnDelete();
+            $table->foreign('userId')->references('id')->on('users');
             // }
-        // });
+        });
     }
 
     /**
