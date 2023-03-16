@@ -32,6 +32,7 @@ return new class extends Migration
         $users = User::all()->toArray();
         $lockers = Locker::all();
         foreach ($lockers as $locker) {
+            if ($locker->lockerNo == null) continue;
             $index = random_int(0, count($users) - 1);
             $locker->update([
                 'userId'=> $users[$index]['uuid'],
