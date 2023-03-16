@@ -34,7 +34,7 @@ return new class extends Migration
         foreach ($records as $record) {
             $index = random_int(0, count($users) - 1);
             $record->update([
-                'userId'=> $users[$index]->uuid,
+                'userId'=> $users[$index]['uuid'],
             ]);
             array_splice($users, $index, 1);
         }
