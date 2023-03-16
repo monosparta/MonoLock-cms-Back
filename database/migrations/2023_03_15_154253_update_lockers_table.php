@@ -40,6 +40,10 @@ return new class extends Migration
             array_splice($users, $index, 1);
         }
 
+        Schema::table('lockers', function (Blueprint $table) {
+            $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+        });
+
         // 建立新關聯
         // Schema::table('lockers', function (Blueprint $table) {
         //     $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
