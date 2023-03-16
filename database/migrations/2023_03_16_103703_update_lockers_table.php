@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        // 建立新關聯
         Schema::table('lockers', function (Blueprint $table) {
             // if (env('DB_CONNECTION') !== 'sqlite') {
             $table->foreign('userId')->references('id')->on('users')->nullOnDelete();
