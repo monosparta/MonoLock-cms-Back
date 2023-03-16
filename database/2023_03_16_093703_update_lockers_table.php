@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('records', function (Blueprint $table) {
-            $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+        Schema::table('lockers', function (Blueprint $table) {
+            if (env('DB_CONNECTION') === 'mysql') {
+                $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+            }
+
         });
     }
 

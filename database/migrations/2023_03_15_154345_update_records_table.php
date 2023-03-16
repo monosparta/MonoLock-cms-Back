@@ -39,6 +39,11 @@ return new class extends Migration
             array_splice($users, $index, 1);
         }
 
+        // 建立新關聯
+        Schema::table('records', function (Blueprint $table) {
+            $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+        });
+
         // DB::statement(
         //     'UPDATE records INNER JOIN users ON records.userId = users.id 
         //             SET records.userId = users.uuid 

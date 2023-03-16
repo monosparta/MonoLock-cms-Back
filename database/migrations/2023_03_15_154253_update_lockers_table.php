@@ -35,10 +35,15 @@ return new class extends Migration
             if ($locker->lockerNo == null) continue;
             $index = random_int(0, count($users) - 1);
             $locker->update([
-                'userId'=> $users[$index]['uuid'],
+                'userId' => $users[$index]['uuid'],
             ]);
             array_splice($users, $index, 1);
         }
+
+        // 建立新關聯
+        Schema::table('lockers', function (Blueprint $table) {
+            $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+        });
 
         // DB::statement(
         //     'UPDATE lockers INNER JOIN users ON lockers.userId = users.id 
