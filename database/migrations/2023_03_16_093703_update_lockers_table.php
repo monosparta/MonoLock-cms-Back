@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('lockers', function (Blueprint $table) {
-            $table->foreign('userId')->references('id')->on('users');
+            $table->foreign('userId')->references('uuid')->on('users');
         });
     }
 
