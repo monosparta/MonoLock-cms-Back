@@ -304,7 +304,7 @@ class UserController extends Controller
                 return response()->json($query->doesnthave('Locker')->get());
             }
         }
-        return response()->json($query->get());
+        return response()->json($query->with('Locker')->get());
     }
 
     /**
