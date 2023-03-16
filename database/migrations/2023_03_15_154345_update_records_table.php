@@ -29,19 +29,18 @@ return new class extends Migration
         });
 
         // 更新原userId流水號為uuid字串
-        $users = User::all()->toArray();
         $records = Record::all();
         foreach ($records as $record) {
-            $index = random_int(0, count($users) - 1);
+            if ($record->lockerNo == null) continue;
+            $user = User::where('id', '=', $record->userId)->first();
             $record->update([
-                'userId' => $users[$index]['uuid'],
+                'userId' => $user->uuid,
             ]);
-            array_splice($users, $index, 1);
         }
 
-        Schema::table('records', function (Blueprint $table) {
-            $table->foreign('userId')->references('uuid')->on('users');
-        });
+        // Schema::table('records', function (Blueprint $table) {
+        //     $table->foreign('userId')->references('uuid')->on('users');
+        // });
 
         // 建立新關聯
         // Schema::table('records', function (Blueprint $table) {

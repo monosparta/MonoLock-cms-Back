@@ -29,15 +29,13 @@ return new class extends Migration
         });
 
         // 更新原userId流水號為uuid字串
-        $users = User::all()->toArray();
         $lockers = Locker::all();
         foreach ($lockers as $locker) {
             if ($locker->lockerNo == null) continue;
-            $index = random_int(0, count($users) - 1);
+            $user = User::where('id', '=', $locker->userId)->first();
             $locker->update([
-                'userId' => $users[$index]['uuid'],
+                'userId' => $user->uuid,
             ]);
-            array_splice($users, $index, 1);
         }
 
         Schema::table('lockers', function (Blueprint $table) {
