@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('lockers', function (Blueprint $table) {
             // if (env('DB_CONNECTION') !== 'sqlite') {
-            $table->foreign('userId')->references('uuid')->on('users')->nullOnDelete();
+            $table->foreign('userId')->references('id')->on('users')->nullOnDelete();
             // }
         });
     }
