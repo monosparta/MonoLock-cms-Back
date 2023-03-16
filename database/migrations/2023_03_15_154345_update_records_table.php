@@ -39,11 +39,11 @@ return new class extends Migration
             array_splice($users, $index, 1);
         }
 
-        DB::statement(
-            'UPDATE records INNER JOIN users ON records.userId = users.id 
-                    SET records.userId = users.uuid 
-                    WHERE records.userId = users.id'
-        );
+        // DB::statement(
+        //     'UPDATE records INNER JOIN users ON records.userId = users.id 
+        //             SET records.userId = users.uuid 
+        //             WHERE records.userId = users.id'
+        // );
 
         // if (env('DB_CONNECTION') !== 'sqlite') {
         //     DB::statement(
