@@ -18,7 +18,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('temp_users', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(UUID())'));
+            $table->uuid('id')->primary();
             $table->integer('permission')->default(1);
             $table->string('name', 40)->nullable();
             $table->string('password', 80)->nullable();
@@ -32,10 +32,14 @@ return new class extends Migration
 
         $users = User::orderBy('id', 'DESC')->get();
         foreach ($users as $user) {
+            $uuid = Uuid::uuid4()->toString();
             DB::statement(
-                'INSERT INTO temp_users VALUES (:permission, :name, :password, :cardId,
-                    :phone, :mail, :token_expire_time, :rememberToken, :timestamps);',
+                'INSERT INTO temp_users (id, permission, name, password, cardId,
+                    phone, mail, token_expire_time) 
+                VALUES (:id, :permission, :name, :password, :cardId,
+                    :phone, :mail, :token_expire_time);',
                 [
+                    $uuid,
                     $user->permission,
                     $user->name,
                     $user->password,
@@ -43,8 +47,8 @@ return new class extends Migration
                     $user->phone,
                     $user->mail,
                     $user->token_expire_time,
-                    $user->rememberToken,
-                    $user->timestamps,
+                    // $user->rememberToken,
+                    // $user->timestamps,
                 ]
             );
         }
