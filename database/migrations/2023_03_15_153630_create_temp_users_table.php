@@ -47,6 +47,7 @@ return new class extends Migration
                     $user->phone,
                     $user->mail,
                     $user->token_expire_time,
+                    // 沒用ㄉ到先註解
                     // $user->rememberToken,
                     // $user->timestamps,
                 ]
@@ -62,5 +63,7 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('temp_users');
+        // Schema::dropIfExists('temp_lockers');
+        // Schema::dropIfExists('temp_records');
     }
 };
