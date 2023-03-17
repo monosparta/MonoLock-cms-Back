@@ -30,12 +30,22 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        $users = User::orderBy('id', 'DESC')->get()->toArray();
+        $users = User::orderBy('id', 'DESC')->get();
         foreach ($users as $user) {
             DB::statement(
-                'INSERT INTO table_name VALUES (:permission, :name, :password, :cardId,
-                    :phone, :mail, :token_expire_time, :rememberToken, :timestamps);'
-                ,[$user]
+                'INSERT INTO temp_users VALUES (:permission, :name, :password, :cardId,
+                    :phone, :mail, :token_expire_time, :rememberToken, :timestamps);',
+                [
+                    $user->permission,
+                    $user->name,
+                    $user->password,
+                    $user->cardId,
+                    $user->phone,
+                    $user->mail,
+                    $user->token_expire_time,
+                    $user->rememberToken,
+                    $user->timestamps,
+                ]
             );
         }
     }
