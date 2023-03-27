@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('records', function (Blueprint $table) {
-            $table->uuid('userId')->change();
-        });
+        Schema::dropIfExists('records');
+        Schema::dropIfExists('lockers');
+        Schema::dropIfExists('users');
+        Schema::rename('temp_records', 'records');
+        Schema::rename('temp_lockers', 'lockers');
+        Schema::rename('temp_users', 'users');
     }
 
     /**
