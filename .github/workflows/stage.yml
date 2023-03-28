@@ -3,8 +3,8 @@ name: My Actions
 on:
   push:
     branches: [ release ]
-  pull_request:
-    branches: [ release ]
+#   pull_request:
+#     branches: [ release ]
 jobs:
   build:
     name: Build and deploy to web server

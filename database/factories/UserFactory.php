@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Factories;
-
+use Ramsey\Uuid\Uuid;
 use App\Models\locker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +20,7 @@ class UserFactory extends Factory
     {
         
         return [
+            'id'=>Uuid::uuid4(),
             'name' => $this->faker->name(),
             'phone' => $this->faker->unique()->regexify('8869\d{8}'),
             'mail' => $this->faker->unique()->safeEmail(),

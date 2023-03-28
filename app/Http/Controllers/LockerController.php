@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Locker;
 use App\Models\Record;
+use Closure;
+use Exception;
 use Illuminate\Log\Logger;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+
 use PhpMqtt\Client\Facades\MQTT;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class LockerController extends Controller
 {
@@ -50,7 +54,7 @@ class LockerController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return  response($validator->errors(), 400);
+            return  response()->json($validator->errors(), 400);
         }
         try {
             $locker = Locker::where('lockerNo', '=', $request['lockerNo']);
@@ -100,7 +104,7 @@ class LockerController extends Controller
             $response = $e->getMessage();
             $httpstatus = 422;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -136,7 +140,7 @@ class LockerController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return  response($validator->errors(), 400);
+            return  response()->json($validator->errors(), 400);
         }
         try {
             $user = User::where('cardId', '=', $request['cardId'])->first();
@@ -157,7 +161,7 @@ class LockerController extends Controller
             $response = $e->getMessage();
             $httpstatus = 422;
         }
-        return response($response, $httpstatus);
+        return response()->json($response, $httpstatus);
     }
 
     /**
@@ -182,7 +186,7 @@ class LockerController extends Controller
         $locker = Locker::with('User:id,name,cardId')->orderBy('id', 'asc')->get(['id', 'lockerNo', 'lockerEncoding', 'lockUp', 'userId', 'error'])->map(function($item){
             return Arr::except($item, ['userId']);
         });
-        return response($locker, 200);
+        return response()->json($locker, 200);
     }
 
     /**
@@ -235,9 +239,37 @@ class LockerController extends Controller
      * @param  \App\Models\Locker  $locker
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, locker $locker)
+    public function update(Request $request, $lockerNo)
     {
-        //
+        $httpstatus = 204;
+        $json = $request->all();
+        $validator = Validator::make(
+            $json,
+            [
+                'userId' => function (string $attribute, mixed $value, Closure $fail) {
+                    if (!empty($value)) {
+                        if(empty(User::where('id', $value)->first())) {
+                            $fail(":attribute不存在");
+                            return;
+                        }
+                    }
+                },
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        try {
+            $newLocker = Locker::where('lockerNo', $lockerNo)->first();
+            $newLocker->update([
+                'userId' => $json['userId'],
+            ]);
+            return response()->json($newLocker, 200);
+        } catch (Exception $e) {
+            $response = $e->getMessage();
+            $httpstatus = 422;
+        }
+        return response()->json($response, $httpstatus);
     }
 
     /**
