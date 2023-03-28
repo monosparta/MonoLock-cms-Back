@@ -17,7 +17,7 @@ class APITest extends TestCase
      */
     public function test_the_login_returns_a_successful_response()
     {
-        $response = $this->post('/api/login', ['mail' => '003@example.com', 'password' => 'root']);
+        $response = $this->post('/api/login', ['mail' => '002@example.com', 'password' => 'root']);
         $response->assertStatus(200);
         $this::$token = $response->getData()->message->token;
     }
