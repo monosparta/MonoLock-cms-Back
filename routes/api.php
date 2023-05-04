@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LockerController;
+use App\Http\Controllers\OfflineDataController;
 use App\Http\Controllers\RecordController;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\UnlockMiddleware;
@@ -45,6 +46,11 @@ Route::middleware([Localization::class])->group(function () {
         Route::post('unlock', [LockerController::class, 'unlock']);
 
         Route::get('record/{lockerNo}', [RecordController::class, 'show']);
+
+        Route::controller(OfflineDataController::class)->group(function () {
+            Route::get('offline', 'index');
+            Route::post('offline', 'requestSync');
+        });
     });
 
     Route::middleware([UnlockMiddleware::class])->group(function () {
