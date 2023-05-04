@@ -169,6 +169,30 @@ class LockerController extends Controller
      *
      * @OA\Get(
      *     tags={"Locker"},
+     *     path="/api/RPIList",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="OK", @OA\JsonContent()),
+     * )
+     *
+     * @return AnonymousResourceCollection
+     */
+    public function RPIList()
+    {
+        $locker = Locker::with('User:id,cardId')
+        ->orderBy('id', 'asc')
+        ->get(['id', 'lockerNo', 'lockerEncoding', 'userId'])
+        ->map(function ($item) {
+            return Arr::except($item, ['userId']);
+        });
+        return response()->json($locker, 200);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     tags={"Locker"},
      *     path="/api/locker",
      *     security={{"sanctum":{}}},
      *     @OA\Response(response=200, description="OK", @OA\JsonContent()),

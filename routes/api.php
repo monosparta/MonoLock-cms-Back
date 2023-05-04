@@ -46,5 +46,9 @@ Route::middleware([Localization::class])->group(function () {
 
         Route::get('record/{lockerNo}', [RecordController::class, 'show']);
     });
-    Route::post('RPIunlock', [LockerController::class, 'RPIunlock'])->middleware(UnlockMiddleware::class);
+
+    Route::middleware([UnlockMiddleware::class])->group(function () {
+        Route::post('RPIunlock', [LockerController::class, 'RPIunlock']);
+        Route::get('RPIList', [LockerController::class, 'RPIList']);
+    });
 });
