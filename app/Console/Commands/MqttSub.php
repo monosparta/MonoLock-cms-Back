@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Command;
 use PhpMqtt\Client\Facades\MQTT;
 use App\Http\Controllers\LockerController;
+use App\Models\OfflineSyncLog;
 
 class mqttSub extends Command
 {
@@ -46,6 +47,34 @@ class mqttSub extends Command
                 echo sprintf("Received QoS level 0 message on topic [%s]: \r\n%s\r\n", $topic, $message);
                 list($lockerEncoding, $error) = explode(",", $message, 2);
                 DB::table("lockers")->where('lockerEncoding', $lockerEncoding)->update(['error' => (int)$error]);
+            }, 0);
+            $mqtt->subscribe('locker/offline', function (string $topic, string $message) {
+                echo sprintf("Received QoS level 0 message on topic [%s]: \r\n%s\r\n", $topic, $message);
+                list($mode, $error) = explode(",", $message, 2);
+                switch ($mode) {
+                    case 'auto':
+                        OfflineSyncLog::create([
+                            'mode' => $mode,
+                            'error' => (int)$error,
+                        ]);
+                        break;
+                    case 'manual':
+                        $log = OfflineSyncLog::where(['mode' => $mode, 'error' => null])
+                            ->orderBy('created_at', 'desc')
+                            ->first();
+                        if ($log) {
+                            $log->update(['error' => (int)$error]);
+                            OfflineSyncLog::where(['mode' => $mode, 'error' => null])->update(['error' => 1]);
+                        } else {
+                            OfflineSyncLog::create([
+                                'mode' => $mode,
+                                'error' => (int)$error,
+                            ]);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }, 0);
             $mqtt->loop(true);
         } catch (\Exception $e) {

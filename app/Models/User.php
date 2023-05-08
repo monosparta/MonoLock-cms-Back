@@ -70,4 +70,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Record::class, 'userId', 'id');
     }
+
+    public function OfflineSyncLog()
+    {
+        return $this->hasMany(OfflineSyncLog::class, 'userId', 'id');
+    }
 }
