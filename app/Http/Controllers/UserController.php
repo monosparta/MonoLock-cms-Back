@@ -202,7 +202,7 @@ class UserController extends Controller
                 return response()->json(['id' => $newUser->id], 200);
             } catch (\Exception $e) {
                 $response = $e->getMessage();
-                $httpstatus = 400;
+                $httpstatus = 422;
             }
         } else {
             $response = "此置物櫃已被使用";
