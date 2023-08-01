@@ -118,8 +118,7 @@ class UserController extends Controller
         if (isset($json['has_lock'])) {
             if ($json['has_lock']) {
                 return response()->json($query->with('Locker')->has('Locker')->get());
-            }
-            else {
+            } else {
                 return response()->json($query->doesnthave('Locker')->get());
             }
         }
@@ -201,8 +200,8 @@ class UserController extends Controller
                 $locker->update(["userId" => $newUser->id]);
                 return response()->json(['id' => $newUser->id], 200);
             } catch (\Exception $e) {
-                $response = ['message' => 'getRepeatData:' . $e->getMessage()];
-                $httpstatus = 411;
+                $response = $e->getMessage();
+                $httpstatus = 422;
             }
         } else {
             $response = "此置物櫃已被使用";
